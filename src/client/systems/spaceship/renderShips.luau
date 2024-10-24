@@ -11,7 +11,6 @@ local shipsUpdated = remotes.connectEvent("shipsUpdated")
 
 local spaceshipModels = {}
 local cframes: { CFrame } = {}
-local states: { Vector3 } = {}
 
 local function onShipCreated(family: string, spaceshipType: string)
 	print(family)
@@ -32,9 +31,8 @@ local function onShipCreated(family: string, spaceshipType: string)
 	end
 end
 
-local function onShipsUpdated(newCFrames: { CFrame }, newStates: { Vector3 })
+local function onShipsUpdated(newCFrames: { CFrame }, _: { Vector3 })
 	cframes = newCFrames
-	states = newStates
 end
 
 local function renderShips()
