@@ -8,6 +8,7 @@ local remotes = require(shared.remotes)
 local assets = ReplicatedStorage.Assets
 local playerShip = assets.PlayerShip
 
+local renderShips = require(script.renderShips)
 local spaceshipControls = require(script.spaceshipControls)
 
 local player = Players.LocalPlayer
@@ -39,6 +40,10 @@ playerShipCreated:connect(function()
 
 		camera.CFrame = CFrame.lookAt(position + Vector3.new(-20, 80, 0), position + Vector3.new(20, 0, 0))
 	end)
+end)
+
+RunService.Heartbeat:Connect(function()
+	renderShips()
 end)
 
 return nil

@@ -2,17 +2,9 @@ local rows = { 100, 80, 60 }
 
 local rng = Random.new()
 
-local function doEnemyBehavior(
-	cframes: { CFrame },
-	models: { Model },
-	velocities: { Vector3 },
-	states: { Vector3 },
-	deltaTime: number
-)
-	for i = 1, #models do
-		local spaceshipModel = models[i]
+local function doEnemyBehavior(cframes: { CFrame }, velocities: { Vector3 }, states: { Vector3 }, deltaTime: number)
+	for i = 1, #cframes do
 		local cframe = cframes[i]
-		local velocity = velocities[i]
 		local state = states[i]
 
 		states[i] =

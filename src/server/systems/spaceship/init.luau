@@ -9,45 +9,46 @@ local doEnemyBehavior = require(script.doEnemyBehavior)
 local assets = ReplicatedStorage.Assets
 local worldEaters = assets.Enemies.WorldEaters
 
-local spaceships = {}
 local cframes = {}
 local velocities = {}
 local states = {}
 
 local playerShipCreated = remotes.createEvent("playerShipCreated")
+local shipCreated = remotes.createEvent("shipCreated")
+local shipsUpdated = remotes.createEvent("shipsUpdated")
 
 local function createPlayerSpaceship(player: Player)
 	playerShipCreated:fire(player)
 end
 
-local function createEnemySpaceship(family: string, spaceshipType: string, cframe: CFrame, initialState: Vector3)
+local function createEnemySpaceship(family: string, spaceshipType: string, initialCFrame: CFrame, initialState: Vector3)
 	if family == "WorldEaters" then
 		local spaceshipModel = worldEaters:FindFirstChild(spaceshipType)
 
 		if not spaceshipModel then
 			warn(("spaceship model %s does not exist"):format(spaceshipType))
+
+			return
 		end
 
-		spaceshipModel = spaceshipModel:Clone()
-		spaceshipModel.Parent = workspace
-
-		table.insert(spaceships, spaceshipModel)
-		table.insert(cframes, cframe)
+		table.insert(cframes, initialCFrame)
 		table.insert(velocities, Vector3.zero)
-		table.insert(states, initialState) -- Current game time, row
+		table.insert(states, initialState)
+
+		shipCreated:fireAll(family, spaceshipType)
 	end
 end
 
 RunService.Heartbeat:Connect(function(deltaTime)
-	doEnemyBehavior(cframes, spaceships, velocities, states, deltaTime)
+	doEnemyBehavior(cframes, velocities, states, deltaTime)
 
-	for index, spaceship in spaceships do
+	for index = 1, #cframes do
 		local targetCFrame = cframes[index] + velocities[index] * deltaTime
 
 		cframes[index] = targetCFrame
-
-		spaceship:PivotTo(targetCFrame)
 	end
+
+	shipsUpdated:fireAll(cframes, states)
 end)
 
 return {
