@@ -13,7 +13,6 @@ local spaceshipModels = {}
 local cframes: { CFrame } = {}
 
 local function onShipCreated(family: string, spaceshipType: string)
-	print(family)
 	if family == "WorldEaters" then
 		local spaceshipModel: Model = worldEaters:FindFirstChild(spaceshipType)
 
@@ -25,7 +24,6 @@ local function onShipCreated(family: string, spaceshipType: string)
 
 		spaceshipModel = spaceshipModel:Clone()
 		spaceshipModel.Parent = workspace
-		print(spaceshipModel)
 
 		table.insert(spaceshipModels, spaceshipModel)
 	end
