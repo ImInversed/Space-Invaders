@@ -2,6 +2,11 @@
   "name": "Space Invaders",
   "tree": {
     "$className": "DataModel",
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
 
     "ReplicatedStorage": {
       "Shared": {
