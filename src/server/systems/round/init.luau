@@ -18,11 +18,14 @@ local function setupRound(player: Player)
 	round.roundTime = 0
 
 	spaceship.createPlayerSpaceship(player)
+	spaceship.createEnemySpaceship("WorldEaters", "Heavy", CFrame.new(60, 20, -45), Vector3.new(4, 80, 0))
+	spaceship.createEnemySpaceship("WorldEaters", "Heavy", CFrame.new(60, 20, 45), Vector3.new(0, 80, 0))
 end
 
-spaceship.createEnemySpaceship("WorldEaters", "Heavy", CFrame.new(60, 20, -45), Vector3.new(4, 80, 0))
-spaceship.createEnemySpaceship("WorldEaters", "Heavy", CFrame.new(60, 20, 45), Vector3.new(0, 80, 0))
-
 Players.PlayerAdded:Connect(setupRound)
+
+for _, player in Players:GetPlayers() do
+	setupRound(player)
+end
 
 return round
