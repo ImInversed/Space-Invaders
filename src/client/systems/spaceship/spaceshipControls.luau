@@ -27,7 +27,10 @@ local function spaceshipControls(spaceship: Model)
 	RunService.Heartbeat:Connect(function(deltaTime: number)
 		local cframe = spaceship:GetPivot()
 
-		spaceship:PivotTo(cframe + Vector3.new(0, 0, direction * 20 * deltaTime))
+		spaceship:PivotTo(
+			CFrame.new(cframe.X, cframe.Y, math.clamp(cframe.Z + direction * 20 * deltaTime, -45, 45))
+				* CFrame.Angles(0, -math.pi / 2, 0)
+		)
 	end)
 end
 
