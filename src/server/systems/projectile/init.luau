@@ -10,8 +10,6 @@ local function createProjectile(origin: CFrame, velocity: Vector3)
 	createProjectileRemote:fireAll(origin, velocity)
 end
 
-projectileHit:connect(function() end)
-
 return {
 	createProjectile = createProjectile,
 }

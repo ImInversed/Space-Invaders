@@ -43,6 +43,10 @@ local function createEnemySpaceship(family: string, spaceshipType: string, initi
 	end
 end
 
+local function getEnemies()
+	return #cframes
+end
+
 RunService.Heartbeat:Connect(function(deltaTime)
 	doEnemyBehavior(cframes, velocities, states, deltaTime)
 
@@ -71,4 +75,5 @@ end)
 return {
 	createEnemySpaceship = createEnemySpaceship,
 	createPlayerSpaceship = createPlayerSpaceship,
+	getEnemies = getEnemies,
 }
