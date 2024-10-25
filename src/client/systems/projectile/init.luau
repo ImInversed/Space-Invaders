@@ -14,11 +14,13 @@ projectileTemplate.Parent = workspace
 
 local createProjectileRemote = remotes.connectEvent("createProjectile")
 local projectileHit = remotes.connectEvent("projectileHit")
+local shipsUpdated = remotes.connectEvent("shipsUpdated")
 
 local models = {}
 local cframes = {}
 local velocities = {}
 local tags = {}
+local enemyCFrames = {}
 
 local function createProjectile(origin: CFrame, velocity: Vector3, tag: string)
 	local projectileModel = projectileTemplate:Clone()
@@ -30,6 +32,10 @@ local function createProjectile(origin: CFrame, velocity: Vector3, tag: string)
 	table.insert(tags, tag)
 end
 
+local function setEnemies(updateEnemyCFrames: { CFrame })
+	enemyCFrames = updateEnemyCFrames
+end
+
 RunService.Heartbeat:Connect(function(deltaTime)
 	for i = 1, #velocities do
 		local cframe = cframes[i]
@@ -37,6 +43,31 @@ RunService.Heartbeat:Connect(function(deltaTime)
 		cframes[i] = cframe + velocities[i] * deltaTime
 
 		local collision = false
+
+		if tags[i] == "red" then
+			for index, shipCFrame in enemyCFrames do
+				local distance = (shipCFrame.Position - cframe.Position).Magnitude
+
+				if distance < 8 then
+					projectileHit:fire(index)
+
+					models[i]:Destroy()
+
+					table.remove(models, i)
+					table.remove(cframes, i)
+					table.remove(velocities, i)
+					table.remove(tags, i)
+
+					collision = true
+
+					break
+				end
+			end
+		end
+
+		if collision then
+			break
+		end
 
 		for j = 1, #velocities do
 			if i == j then
@@ -68,10 +99,12 @@ RunService.Heartbeat:Connect(function(deltaTime)
 	workspace:BulkMoveTo(models, cframes, Enum.BulkMoveMode.FireCFrameChanged)
 end)
 
+shipsUpdated:connect(setEnemies)
 createProjectileRemote:connect(function(origin: CFrame, velocity: Vector3)
 	createProjectile(origin, velocity, "green")
 end)
 
 return {
 	createProjectile = createProjectile,
+	setEnemies = setEnemies,
 }

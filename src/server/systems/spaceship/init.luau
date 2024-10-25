@@ -12,10 +12,13 @@ local worldEaters = assets.Enemies.WorldEaters
 local cframes = {}
 local velocities = {}
 local states = {}
+local healths = {}
 
 local playerShipCreated = remotes.createEvent("playerShipCreated")
 local shipCreated = remotes.createEvent("shipCreated")
+local shipDestroyed = remotes.createEvent("shipDestroyed")
 local shipsUpdated = remotes.createEvent("shipsUpdated")
+local projectileHit = remotes.connectEvent("projectileHit")
 
 local function createPlayerSpaceship(player: Player)
 	playerShipCreated:fire(player)
@@ -34,6 +37,7 @@ local function createEnemySpaceship(family: string, spaceshipType: string, initi
 		table.insert(cframes, initialCFrame)
 		table.insert(velocities, Vector3.zero)
 		table.insert(states, initialState)
+		table.insert(healths, 100)
 
 		shipCreated:fireAll(family, spaceshipType)
 	end
@@ -49,6 +53,19 @@ RunService.Heartbeat:Connect(function(deltaTime)
 	end
 
 	shipsUpdated:fireAll(cframes, states)
+end)
+
+projectileHit:connect(function(_: Player, index: number)
+	healths[index] -= 25
+
+	if healths[index] < 0 then
+		table.remove(cframes, index)
+		table.remove(velocities, index)
+		table.remove(states, index)
+		table.remove(healths, index)
+
+		shipDestroyed:fireAll(index)
+	end
 end)
 
 return {

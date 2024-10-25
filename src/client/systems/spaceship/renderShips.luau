@@ -7,6 +7,7 @@ local assets = ReplicatedStorage.Assets
 local worldEaters = assets.Enemies.WorldEaters
 
 local shipCreated = remotes.connectEvent("shipCreated")
+local shipDestroyed = remotes.connectEvent("shipDestroyed")
 local shipsUpdated = remotes.connectEvent("shipsUpdated")
 
 local spaceshipModels = {}
@@ -29,6 +30,13 @@ local function onShipCreated(family: string, spaceshipType: string)
 	end
 end
 
+local function onShipDestroyed(index: number)
+	spaceshipModels[index]:Destroy()
+
+	table.remove(spaceshipModels, index)
+	table.remove(cframes, index)
+end
+
 local function onShipsUpdated(newCFrames: { CFrame }, _: { Vector3 })
 	cframes = newCFrames
 end
@@ -43,6 +51,7 @@ local function renderShips()
 end
 
 shipCreated:connect(onShipCreated)
+shipDestroyed:connect(onShipDestroyed)
 shipsUpdated:connect(onShipsUpdated)
 
 return renderShips
